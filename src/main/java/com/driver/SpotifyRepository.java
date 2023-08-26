@@ -237,7 +237,6 @@ public class SpotifyRepository {
                         break;
                     }
                 }
-                break; // addition
             }
         }
         if(!alreadyLikedByUser){
