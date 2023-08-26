@@ -237,6 +237,7 @@ public class SpotifyRepository {
                         break;
                     }
                 }
+                break; // addition
             }
         }
         if(!alreadyLikedByUser){
@@ -246,7 +247,7 @@ public class SpotifyRepository {
             Album album = null;
             for(Album a : albumSongMap.keySet()){
                 for(Song s : albumSongMap.get(a)){
-                    if(s.getTitle().equals(songTitle)){
+                    if(s.getTitle().equals(song.getTitle())){
                         album = a;
                         break;
                     }
