@@ -2,6 +2,7 @@ package com.driver;
 
 import java.util.*;
 
+import org.springframework.aop.target.dynamic.AbstractRefreshableTargetSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -48,36 +49,68 @@ public class SpotifyRepository {
     }
 
     public Album createAlbum(String title, String artistName) {
+        Artist artist = null;
         for(Artist a : artists){
             // if artist exists
             if(a.getName().equals(artistName)){
-                albums.add(new Album(title));
-                return albums.get(albums.size()-1);
+                artist = a;
+                break;
             }
         }
-        // if artist doesn't exist
-        createArtist(artistName);
+        if(artist == null) {
+            artists.add(new Artist(artistName));
+            artist = artists.get(artists.size()-1);
+            // HashMap<Artist, List<Album>> artistAlbumMap;
+        }
         albums.add(new Album(title));
-        return albums.get(albums.size()-1);
+        Album album = albums.get(albums.size()-1);
+        boolean albumAdded = false;
+        for(Artist a : artistAlbumMap.keySet()){
+            if(a.getName().equals(artist.getName())){
+                List<Album> oldlist = artistAlbumMap.get(a);
+                oldlist.add(album);
+                albumAdded = true;
+            }
+        }
+        if(!albumAdded){
+            List<Album> newlist = new ArrayList<>();
+            newlist.add(album);
+            artistAlbumMap.put(artist, newlist);
+        }
+        return album;
     }
 
     public Song createSong(String title, String albumName, int length) throws Exception{
+        // Find album
+        Album album = null;
         for (Album a : albums) {
             if (a.getTitle().equals(albumName)) {
-                songs.add(new Song(title, length));
-                Song s = songs.get(songs.size() - 1);
-                if (albumSongMap.containsKey(a)) {
-                    List<Song> oldList = albumSongMap.get(a);
-                    oldList.add(s);
-                } else {
-                    List<Song> newList = new ArrayList<>();
-                    newList.add(s);
-                    albumSongMap.put(a, newList);
-                }
-                return s;
+                album = a;
+                break;
             }
         }
-        throw new Exception("Album does not exist");
+        if(album == null){
+            throw new Exception("Album does not exist");
+        }
+
+        songs.add(new Song(title, length));
+        Song s = songs.get(songs.size() - 1);
+        // HashMap<Album, List<Song>> albumSongMap
+        boolean songAdded = false;
+        for(Album a : albumSongMap.keySet()) {
+            if(a.getTitle().equals(album.getTitle())){
+                List<Song> oldList = albumSongMap.get(a);
+                oldList.add(s);
+                songAdded = true;
+            }
+        }
+        if(!songAdded){
+            List<Song> newList = new ArrayList<>();
+            newList.add(s);
+            albumSongMap.put(album, newList);
+        }
+        return s;
+
     }
 
     public Playlist createPlaylistOnLength(String mobile, String title, int length) throws Exception {
