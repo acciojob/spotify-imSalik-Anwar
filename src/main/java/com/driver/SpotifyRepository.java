@@ -184,8 +184,11 @@ public class SpotifyRepository {
                 break;
             }
         }
+        // HashMap<Playlist, List<User>> playlistListenerMap
+        boolean playlistFound = false;
         for(Playlist p : playlistListenerMap.keySet()){
             if(p.getTitle().equals(playlistTitle)){
+                playlistFound = true;
                 List<User> userlist = playlistListenerMap.get(p);
                 boolean listenerFound = false;
                 for(User u : userlist){
@@ -195,9 +198,14 @@ public class SpotifyRepository {
                     }
                 }
                 if(!listenerFound){
+                    userlist.add(user);
                     playlistListenerMap.put(playlist, userlist);
                 }
             }
+        }
+        if(!playlistFound){
+            playlistListenerMap.put(new Playlist(playlistTitle), new ArrayList<>());
+            playlistListenerMap.get(playlist).add(user);
         }
         return playlist;
     }
@@ -241,6 +249,8 @@ public class SpotifyRepository {
         }
         if(!alreadyLikedByUser){
             song.setLikes(1);
+            songLikeMap.put(song, new ArrayList<>());
+            songLikeMap.get(song).add(user);
             // HashMap<Artist, List<Album>> artistAlbumMap;
             // HashMap<Album, List<Song>> albumSongMap;
             Album album = null;
