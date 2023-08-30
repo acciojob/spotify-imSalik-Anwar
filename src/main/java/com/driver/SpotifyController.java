@@ -49,7 +49,7 @@ public class SpotifyController {
     @PostMapping("/add-playlist-on-length")
     public String createPlaylistOnLength(@RequestParam("mobile") String mobile, @RequestParam("title") String title, @RequestParam("length") int length) throws Exception{
         //Create a playlist with given title and add all songs having the given length in the database to that playlist
-        //The creater of the playlist will be the given user and will also be the only listener at the time of playlist creation
+        //The creator of the playlist will be the given user and will also be the only listener at the time of playlist creation
         //If the user does not exist, throw "User does not exist" exception
         try {
             spotifyService.createPlaylistOnLength(mobile, title, length);

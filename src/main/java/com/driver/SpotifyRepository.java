@@ -125,8 +125,12 @@ public class SpotifyRepository {
         playlistSongMap.put(playlist, songlist);
         boolean userFound = false;
         for(User u : users){
+            // HashMap<User, Playlist> creatorPlaylistMap;
+            // HashMap<Playlist, List<User>> playlistListenerMap;
             if(u.getMobile().equals(mobile)){
                 creatorPlaylistMap.put(u, playlist);
+                playlistListenerMap.put(playlist, new ArrayList<>());
+                playlistListenerMap.get(playlist).add(u);
                 userFound = true;
                 break;
             }
