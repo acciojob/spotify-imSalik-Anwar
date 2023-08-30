@@ -15,6 +15,7 @@ public class Song {
     }
 
     public Song(String s) {
+        this.title = title;
     }
 
     public String getTitle() {
